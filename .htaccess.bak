@@ -1,0 +1,94 @@
+# ==============================================================================
+# Security & Routing Configuration for Sampath Book Finder (bookfairtracker.com)
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    DirectoryIndex index.html index.php
+
+    # 1. Canonical Redirect: www to apex domain (HTTPS)
+    RewriteCond %{HTTP_HOST} ^www\.bookfairtracker\.com$ [NC]
+    RewriteRule ^(.*)$ https://bookfairtracker.com/$1 [L,R=301]
+
+    # 2. Force HTTPS Everywhere
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+
+    # 3. Block access to sensitive system, version control, and config files
+    RewriteRule ^(\.git|\.env|\.user\.ini|php\.ini|composer\.(json|lock)|package(-lock)?\.json|tsconfig\.json) - [F,L,NC]
+    RewriteRule ^(backend/storage|backend/bootstrap/cache|backend/vendor|backend/app|backend/config|backend/routes|backend/database) - [F,L,NC]
+    RewriteRule \.(sql|bak|log|tar|gz|zip|env)$ - [F,L,NC]
+
+    # 4. Return real 404 for common malicious scanner probes (avoids soft-404 SPA fallback)
+    RewriteRule (wp-login\.php|wp-admin|xmlrpc\.php|phpmyadmin|cgi-bin|\.asp|\.jsp) - [R=404,L,NC]
+
+    # 5. Route to backend/public/ if not already rewritten
+    RewriteCond %{REQUEST_URI} !^/backend/public/ [NC]
+    RewriteRule ^$ backend/public/ [L,QSA]
+
+    RewriteCond %{REQUEST_URI} !^/backend/public/ [NC]
+    RewriteRule ^(.*)$ backend/public/$1 [L,QSA]
+</IfModule>
+
+# ==============================================================================
+# Security Headers & Information Disclosure Protection
+# ==============================================================================
+<IfModule mod_headers.c>
+    # 1. Force HSTS (HTTP Strict Transport Security - 1 Year)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # 2. Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # 3. Prevent Clickjacking
+    Header always set X-Frame-Options "DENY"
+
+    # 4. Strict Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # 5. Restrict unnecessary browser features
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    # 6. Content Security Policy (CSP)
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.googleapis.com; font-src 'self' https://fonts.gstatic.com https://*.gstatic.com data:; img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://images.unsplash.com; connect-src 'self' https://fonts.googleapis.com https://*.googleapis.com https://fonts.gstatic.com https://*.gstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+
+    # 7. Information Disclosure: Strip PHP and server signatures
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php8_module>
+   php_flag display_errors Off
+   php_value error_log "error_log"
+   php_flag log_errors On
+   php_value max_execution_time 60
+   php_value max_input_time 60
+   php_value max_input_vars 4000
+   php_value memory_limit 2048M
+   php_value post_max_size 128M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php83"
+   php_value upload_max_filesize 32M
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors Off
+   php_value error_log "error_log"
+   php_flag log_errors On
+   php_value max_execution_time 60
+   php_value max_input_time 60
+   php_value max_input_vars 4000
+   php_value memory_limit 2048M
+   php_value post_max_size 128M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php83"
+   php_value upload_max_filesize 32M
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit

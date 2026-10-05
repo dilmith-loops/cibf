@@ -1,0 +1,5 @@
+[24-Sep-2026 18:38:00 UTC] PHP Warning:  require(/home/smpthbktra/public_html/backend/vendor/autoload.php): Failed to open stream: No such file or directory in /home/smpthbktra/public_html/backend/artisan on line 10
+[24-Sep-2026 18:38:00 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/smpthbktra/public_html/backend/vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home/smpthbktra/public_html/backend/artisan:10
+Stack trace:
+#0 {main}
+  thrown in /home/smpthbktra/public_html/backend/artisan on line 10
