@@ -24,10 +24,11 @@
     RewriteRule (wp-login\.php|wp-admin|xmlrpc\.php|phpmyadmin|cgi-bin|\.asp|\.jsp) - [R=404,L,NC]
 
     # 5. Route to backend/public/ if not already rewritten
-    RewriteCond %{REQUEST_URI} !^/backend/public/ [NC]
+    RewriteRule ^backend/public/ - [L]
+    RewriteCond %{REQUEST_URI} !(^|/)backend/public/ [NC]
     RewriteRule ^$ backend/public/ [L,QSA]
 
-    RewriteCond %{REQUEST_URI} !^/backend/public/ [NC]
+    RewriteCond %{REQUEST_URI} !(^|/)backend/public/ [NC]
     RewriteRule ^(.*)$ backend/public/$1 [L,QSA]
 </IfModule>
 

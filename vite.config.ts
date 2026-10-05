@@ -6,7 +6,7 @@ import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
-  const basePath = process.env.VITE_BASE_PATH || '/';
+  const basePath = process.env.VITE_BASE_PATH || '/cibf/';
   return {
     base: basePath,
     plugins: [
@@ -86,19 +86,22 @@ export default defineConfig(() => {
         },
       }),
       {
-        name: 'dev-rewrite-booktrack',
+        name: 'dev-rewrite-cibf',
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
             if (req.url) {
-              if (req.url === '/booktrack' || req.url === '/booktrack/') {
+              if (req.url === '/cibf' || req.url === '/cibf/' || req.url === '/booktrack' || req.url === '/booktrack/') {
                 req.url = '/';
+              } else if (req.url.startsWith('/cibf/')) {
+                req.url = req.url.replace(/^\/cibf/, '');
               } else if (req.url.startsWith('/booktrack/')) {
                 req.url = req.url.replace(/^\/booktrack/, '');
               }
             }
             // Serve dist assets fallback for cached clients
-            if (req.url && (req.url.startsWith('/assets/') || req.url === '/registerSW.js' || req.url === '/manifest.webmanifest')) {
-              const localDistFile = path.resolve(__dirname, 'dist', req.url.slice(1));
+            if (req.url && (req.url.startsWith('/assets/') || req.url.startsWith('/cibf/assets/') || req.url === '/registerSW.js' || req.url === '/manifest.webmanifest')) {
+              const cleanedUrl = req.url.replace(/^\/cibf/, '');
+              const localDistFile = path.resolve(__dirname, 'dist', cleanedUrl.slice(1));
               if (fs.existsSync(localDistFile)) {
                 const ext = path.extname(localDistFile).toLowerCase();
                 const mimeTypes: Record<string, string> = {

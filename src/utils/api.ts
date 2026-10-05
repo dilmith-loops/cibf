@@ -10,9 +10,14 @@ export const getApiUrl = (endpoint: string): string => {
     return `${envBase.replace(/\/$/, '')}${cleanEndpoint}`;
   }
 
-  // Detect /booktrack subpath dynamically from browser URL
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/booktrack')) {
-    return `/booktrack${cleanEndpoint}`;
+  // Detect /cibf or /booktrack subpath dynamically from browser URL
+  if (typeof window !== 'undefined') {
+    if (window.location.pathname.startsWith('/cibf')) {
+      return `/cibf${cleanEndpoint}`;
+    }
+    if (window.location.pathname.startsWith('/booktrack')) {
+      return `/booktrack${cleanEndpoint}`;
+    }
   }
 
   return cleanEndpoint;

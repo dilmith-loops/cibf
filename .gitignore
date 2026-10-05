@@ -28,6 +28,15 @@ backend/.env.*
 
 # Logs
 *.log
+error_log
+backend/error_log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Server scratch & ini files
+*.bak
+*.phar
+composer-setup.php
+.user.ini
+php.ini

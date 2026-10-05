@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             Route::middleware('api')
+                ->prefix('cibf/api')
+                ->group(__DIR__.'/../routes/api.php');
+
+            Route::middleware('api')
                 ->prefix('booktrack/api')
                 ->group(__DIR__.'/../routes/api.php');
         },
@@ -23,6 +27,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->is('booktrack/api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*') || $request->is('cibf/api/*') || $request->is('booktrack/api/*') || $request->expectsJson(),
         );
     })->create();

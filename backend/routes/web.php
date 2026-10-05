@@ -17,4 +17,4 @@ Route::get('/{any?}', function () {
         'status' => 'React frontend not built yet.',
         'message' => 'Please run "npm run build" locally to compile the React frontend into public/index.html before deploying.'
     ], 404);
-})->where('any', '^(?!(api|booktrack/api)).*$');
+})->where('any', '^(?!(api|cibf/api|booktrack/api)).*$');
